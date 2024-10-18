@@ -99,7 +99,7 @@ def delete_subject(id: int) -> dict:
         return JSONResponse(status_code=404, content={'message': 'Resource not found'})
 
     # delete model
-    SubjectService(db).delete(id)
+    SubjectService(db).delete(model)
 
     # return success response
     return JSONResponse(status_code=200, content={'message': 'Resource deleted successfully'})
