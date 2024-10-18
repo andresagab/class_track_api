@@ -1,12 +1,29 @@
 from typing import Optional
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
+from config.database import Session
+
+from models.Subject import Subject
 
 
 class SubjectSchema(BaseModel):
-    # define attributes or fields
+    ### SCHEMA PROPERTIES
+    
     id: Optional[int] = None
     name: str = Field(min_length=1, max_length=150)
     description: Optional[str] = Field(min_length=1, max_length=300)
+
+    ### VALIDATORS
+
+    @field_validator("name")
+    def name_must_be_unique(cls, value: str) -> str:
+        # get db session
+        db = Session()
+        result = db.query(Subject).filter(Subject.name == value).count()
+        if result:
+            raise ValueError("Name must be unique")
+        return value
+
+    ### SCHEMA EXAMPLE
 
     # define schema example
     class Config:
